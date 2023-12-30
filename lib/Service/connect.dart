@@ -1,31 +1,43 @@
-// ignore_for_file: non_constant_identifier_names, avoid_print
+// ignore_for_file: avoid_print
 
 import 'package:dog_app/Model/dog.dart';
 import 'package:dog_app/helper/static.dart';
 import 'package:get/get.dart';
 
+// Mengambil data dari API
 class Service extends GetConnect {
-  // membuat  fungsi login untuk mengambil data dari API
-  String Content = "application/json";
-  final reqTimeout = const Duration(seconds: 30);
+  String content = "application/json";
 
-  Future<Welcome?> getData() async {
+  Future<List<Welcome>?> getData() async {
     try {
-      //logic to connect api
+      // menggunakan metode get untuk mengambil data dari API
       var response = await get(Appstrings.URL, headers: {
-        "Content-Type": Content,
+        "Content-Type": content,
         "x-api-key": Appstrings.API_KEY,
-      }).timeout(reqTimeout);
+      });
+
       if (response.status.code == 200) {
-        print('Response Body: ${response.body}');
-        return Welcome.fromJson(response.body[0]);
+        final responseBody = response.body;
+        print(responseBody);
+        //melakukan check apakah response body termasuk list
+        if (responseBody is List) {
+          var data = List<Welcome>.from(
+            responseBody.map((item) => Welcome.fromJson(item)),
+          );
+          print('Response Body: $data');
+          return data;
+        } else {
+          //jika data bukan berbentuk list kembalikan nilai null
+          print('Error: Response body is not an array');
+          return null;
+        }
       } else {
         print('Error Message: ${response.statusText}');
         print('Error: ${response.statusText}');
         return null;
       }
     } catch (e) {
-      print(e);
+      print('Error during data retrieval or parsing: $e');
       return null;
     }
   }
