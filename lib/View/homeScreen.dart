@@ -17,7 +17,38 @@ class HomeScreen extends StatelessWidget {
         child: Center(
           child: Column(
             children: [
-              ProfileUser(),
+              Obx(() {
+                if (dogController.cardLoading.value) {
+                  return Card(
+                    color: Colors.grey[300], // Placeholder color
+                    child: ListTile(
+                      leading: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.grey),
+                        ),
+                      ),
+                      title: SizedBox(
+                        height: 20,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(color: Colors.black),
+                        ),
+                      ),
+                      subtitle: SizedBox(
+                        height: 14,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(color: Colors.black),
+                        ),
+                      ),
+                    ),
+                  );
+                } else {
+                  return ProfileUser();
+                }
+              }),
               const SizedBox(
                 height: 20,
               ),
@@ -36,6 +67,12 @@ class HomeScreen extends StatelessWidget {
                           child: ListTile(
                             title: Text(
                               'Name Dog: ${data.name}',
+                              style: GoogleFonts.lato(
+                                textStyle: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
                           ),
                         );
